@@ -1,0 +1,63 @@
+{
+  "reservations": [
+    {
+      "date": "28/10/2024",
+      "categories": [
+        {
+          "title": "Fotbal",
+          "fields": [
+            {
+              "id": 1,
+              "occupiedSlots": ["11:00", "11:30", "12:00", "18:30"]
+            },
+            {
+              "id": 2,
+              "occupiedSlots": ["11:00", "11:30", "12:00"]
+            },
+            {
+              "id": 3,
+              "occupiedSlots": ["11:00", "11:30", "12:00"]
+            }
+          ]
+        },
+        {
+          "title": "Tenis",
+          "fields": [
+            {
+              "id": 1,
+              "occupiedSlots": ["11:00", "11:30", "12:00", "18:30"]
+            },
+            {
+              "id": 2,
+              "occupiedSlots": ["11:00", "11:30", "12:00"]
+            },
+            {
+              "id": 3,
+              "occupiedSlots": ["11:00", "11:30", "12:00"]
+            }
+          ]
+        },
+        {
+          "title": "Tenis de picior",
+          "fields": [
+            {
+              "id": 1,
+              "occupiedSlots": ["11:00", "11:30", "12:00", "18:30"]
+            },
+            {
+              "id": 2,
+              "occupiedSlots": ["11:00", "11:30", "12:00"]
+            },
+            {
+              "id": 3,
+              "occupiedSlots": ["11:00", "11:30", "12:00"]
+            }
+          ]
+        }
+      ],
+      "startHour": 8,
+      "endHour": 24,
+      "hasHalfHour": true
+    }
+  ]
+}
