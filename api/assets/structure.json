@@ -1,7 +1,7 @@
 {
   "reservations": [
     {
-      "date": "28/10/2024",
+      "date": "2024-11-01",
       "categories": [
         {
           "title": "Fotbal",
@@ -24,21 +24,54 @@
           "title": "Tenis",
           "fields": [
             {
-              "id": 1,
+              "id": 4,
               "occupiedSlots": ["11:00", "11:30", "12:00", "18:30"]
             },
             {
-              "id": 2,
+              "id": 5,
               "occupiedSlots": ["11:00", "11:30", "12:00"]
             },
             {
-              "id": 3,
+              "id": 6,
               "occupiedSlots": ["11:00", "11:30", "12:00"]
             }
           ]
         },
         {
           "title": "Tenis de picior",
+          "fields": [
+            {
+              "id": 7,
+              "occupiedSlots": ["11:00", "11:30", "12:00", "18:30"]
+            },
+            {
+              "id": 8,
+              "occupiedSlots": ["11:00", "11:30", "12:00"]
+            },
+            {
+              "id": 9,
+              "occupiedSlots": ["11:00", "11:30", "12:00"]
+            },
+            {
+              "id": 10,
+              "occupiedSlots": ["11:00", "11:30", "12:00"]
+            },
+            {
+              "id": 11,
+              "occupiedSlots": ["11:00", "11:30", "12:00"]
+            }
+          ]
+        }
+      ],
+      "startHour": 8,
+      "endHour": 24,
+      "range": 30
+    },
+    {
+      "date": "2024-11-02",
+      "categories": [
+        {
+          "title": "Volei",
           "fields": [
             {
               "id": 1,
@@ -53,11 +86,53 @@
               "occupiedSlots": ["11:00", "11:30", "12:00"]
             }
           ]
+        },
+        {
+          "title": "Tenis",
+          "fields": [
+            {
+              "id": 4,
+              "occupiedSlots": ["11:00", "11:30", "12:00", "18:30"]
+            },
+            {
+              "id": 5,
+              "occupiedSlots": ["11:00", "11:30", "12:00"]
+            },
+            {
+              "id": 6,
+              "occupiedSlots": ["11:00", "11:30", "12:00"]
+            }
+          ]
+        },
+        {
+          "title": "Tenis de picior",
+          "fields": [
+            {
+              "id": 7,
+              "occupiedSlots": ["11:00", "11:30", "12:00", "18:30"]
+            },
+            {
+              "id": 8,
+              "occupiedSlots": ["11:00", "11:30", "12:00"]
+            },
+            {
+              "id": 9,
+              "occupiedSlots": ["11:00", "11:30", "12:00"]
+            },
+            {
+              "id": 10,
+              "occupiedSlots": ["11:00", "11:30", "12:00"]
+            },
+            {
+              "id": 11,
+              "occupiedSlots": ["11:00", "11:30", "12:00"]
+            }
+          ]
         }
       ],
       "startHour": 8,
-      "endHour": 24,
-      "hasHalfHour": true
+      "endHour": 15,
+      "range": 30
     }
   ]
 }

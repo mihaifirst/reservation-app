@@ -1,15 +1,11 @@
-const start = 23;
-const end = 24;
-const range = 15;
-
-function setTimeSlots(hour, end, range = 60) {
+function computeTimeSlots(hour, end, range = 60) {
   const result = [];
   let minutes = 0;
 
   for (let i = hour; i <= end; i++) {
     const fullHour = `${doubleDigits(i)}:${doubleDigits(minutes)}`;
 
-    if (i === end && minutes === 15) {
+    if (i === end && minutes === 30) {
       continue;
     }
 
@@ -33,7 +29,4 @@ function doubleDigits(input) {
   return input;
 }
 
-const timeSlots = setTimeSlots(start, end, range);
-console.log(timeSlots);
-
-module.exports = { setTimeSlots };
+module.exports = { computeTimeSlots };
