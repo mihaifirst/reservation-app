@@ -12,8 +12,6 @@ function App() {
   // const timeSlots = setTimeSlots(start, end, range);
   // const names = ["Fotbal", "Tenis", "Tenis de picior"];
 
-  console.log("1");
-
   // const getReservations = () => {
   //   axios
   //     .get("http://localhost:3333/api/structure")
