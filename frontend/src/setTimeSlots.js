@@ -1,24 +1,19 @@
-export default function setTimeSlots(hour, end, range) {
+export default function setTimeSlots(hour, end, range = 30) {
   const result = [];
   let minutes = 0;
-
   for (let i = hour; i <= end; i++) {
     const fullHour = `${doubleDigits(i)}:${doubleDigits(minutes)}`;
-
-    if (i === end && minutes === 15) {
+    if (i === end && minutes === 30) {
       continue;
     }
-
     if (minutes === 60) {
       minutes = 0;
       continue;
     }
-
     result.push(fullHour);
     minutes += range;
     i--;
   }
-
   return result;
 }
 

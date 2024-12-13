@@ -24,3 +24,11 @@ code {
 .table tr td {
   padding: 10px;
 }
+
+.slot-open {
+  background-color: green;
+}
+
+.slot-closed {
+  background-color: red;
+}

@@ -1,89 +1,86 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import setTimeSlots from "./setTimeSlots";
-import getCategories from "./getCategories";
+import setTimeSlots from "./setTimeSlots.js";
+import getReservation from "./getReservation.js";
+import abbreviation from "./abbreviation.js";
+import isSlotOccupied from "./fieldsHelpers.js";
 
 function App() {
-  // const [reservations, setReservation] = useState(null);
-  // const start = 23;
-  // const end = 24;
-  // const range = 30;
-  // const timeSlots = setTimeSlots(start, end, range);
-  // const names = ["Fotbal", "Tenis", "Tenis de picior"];
-
-  // const getReservations = () => {
-  //   axios
-  //     .get("http://localhost:3333/api/structure")
-  //     .then(({ data }) => {
-  //       // console.log(data);
-  //       // console.log("2");
-  //       setReservation(data.reservations);
-  //       // console.log(getCategories(reservations, "28/10/2024"));
-  //     })
-  //     .catch((e) => console.log(e));
-  // };
+  const [reservations, setReservations] = useState(null);
 
   useEffect(() => {
-    // getReservations();
-    console.log("2");
+    axios
+      .get("http://localhost:3333/api/structure")
+      .then(({ data }) => {
+        setReservations(data.reservations);
+      })
+      .catch((e) => console.log(e));
   }, []);
 
-  console.log("3");
+  const reservation = getReservation(reservations, "12/11/2024");
+
+  if (!reservation.categories) {
+    return;
+  }
+
+  const { startHour, endHour, range } = reservation;
+  const timeSlots = setTimeSlots(startHour, endHour, range);
 
   return (
     <>
-      {/* <pre>{JSON.stringify(data.reservations, null, 2)}</pre> */}
       <table className="table" border={1}>
         <thead>
           <tr>
             <td rowSpan={3}>Ora</td>
-
-            {names.map((name, index) => (
-              <td key={index} colSpan={names.length}>
-                {name}
+            {reservation.categories.map((category, index) => (
+              <td key={index} colSpan={category.fields.length}>
+                {category.title}
               </td>
             ))}
           </tr>
           <tr>
-            <td rowSpan={2}>1. Fotbal</td>
-            <td rowSpan={2}>2. Fotbal</td>
-            <td rowSpan={2}>3. Fotbal</td>
-            <td rowSpan={2}>4. Tenis</td>
-            <td rowSpan={2}>5. Tenis</td>
-            <td rowSpan={2}>6. Tenis</td>
-            <td rowSpan={2}>7. Tenis</td>
-            <td rowSpan={2}>8. Tenis</td>
+            {reservation.categories.map((item, index) =>
+              item.fields.map((field, fieldIndex) => (
+                <td key={fieldIndex} rowSpan={2}>
+                  {field.id}. {abbreviation(item.title)}
+                </td>
+              ))
+            )}
           </tr>
         </thead>
         <tbody>
-          {/* <tr>
-            <td>08:00</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-          </tr>
-          <tr>
-            <td>08:30</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-          </tr> */}
-
-          {timeSlots.map((name, index) => (
+          {timeSlots.map((time, index) => (
             <tr>
-              <td key={index}>{name}</td>
-              <td>1</td>
+              <td key={index}>{time}</td>
+              {reservation.categories.map((category, index) =>
+                category.fields.map((field, fieldIndex) => (
+                  <td
+                    key={fieldIndex}
+                    className={
+                      isSlotOccupied(
+                        reservations,
+                        reservation.id,
+                        category.id,
+                        field.id,
+                        time
+                      )
+                        ? "slot-closed"
+                        : "slot-open"
+                    }
+                  >
+                    {isSlotOccupied(
+                      reservations,
+                      reservation.id,
+                      category.id,
+                      field.id,
+                      time
+                    )
+                      ? "Closed"
+                      : "Open"}
+                  </td>
+                ))
+              )}
             </tr>
           ))}
         </tbody>
