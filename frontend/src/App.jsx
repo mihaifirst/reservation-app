@@ -1,10 +1,9 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import setTimeSlots from "./setTimeSlots.js";
-import getReservation from "./getReservation.js";
-import abbreviation from "./abbreviation.js";
-import isSlotOccupied from "./fieldsHelpers.js";
+import setTimeSlots from "./helpers/setTimeSlots.js";
+import { getReservation, abbreviation } from "./helpers/reservations.js";
+import isSlotOccupied from "./helpers/fieldsHelpers.js";
 
 function App() {
   const [reservations, setReservations] = useState(null);
@@ -20,8 +19,8 @@ function App() {
 
   const reservation = getReservation(reservations, "12/11/2024");
 
-  if (!reservation.categories) {
-    return;
+  if (!reservation?.categories) {
+    return null;
   }
 
   const { startHour, endHour, range } = reservation;
@@ -33,30 +32,30 @@ function App() {
         <thead>
           <tr>
             <td rowSpan={3}>Ora</td>
-            {reservation.categories.map((category, index) => (
-              <td key={index} colSpan={category.fields.length}>
+            {reservation.categories.map((category) => (
+              <td key={category.id} colSpan={category.fields.length}>
                 {category.title}
               </td>
             ))}
           </tr>
           <tr>
-            {reservation.categories.map((item, index) =>
-              item.fields.map((field, fieldIndex) => (
-                <td key={fieldIndex} rowSpan={2}>
-                  {field.id}. {abbreviation(item.title)}
+            {reservation.categories.map((category) =>
+              category.fields.map((field) => (
+                <td key={field.id} rowSpan={2}>
+                  {field.id}. {abbreviation(category.title)}
                 </td>
               ))
             )}
           </tr>
         </thead>
         <tbody>
-          {timeSlots.map((time, index) => (
-            <tr>
-              <td key={index}>{time}</td>
-              {reservation.categories.map((category, index) =>
-                category.fields.map((field, fieldIndex) => (
+          {timeSlots.map((time) => (
+            <tr key={time}>
+              <td>{time}</td>
+              {reservation.categories.map((category) =>
+                category.fields.map((field) => (
                   <td
-                    key={fieldIndex}
+                    key={`${category.id}-${field.id}`}
                     className={
                       isSlotOccupied(
                         reservations,
