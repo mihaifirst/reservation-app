@@ -4,15 +4,18 @@ import axios from "axios";
 import mapTimeSlots from "./helpers/mapTimeSlots.js";
 import { getReservation, abbreviation } from "./helpers/reservations.js";
 import isSlotOccupied from "./helpers/fieldsHelpers.js";
-import DatepickerComponent from "./components/Datepicker/Datepickercomponent.jsx";
+import DatePickerComponent from "./components/date-picker/date-picker.component.jsx";
 import formatDate from "./helpers/calendar.helpers.js";
 
 function App() {
   const [calendars, setCalendars] = useState([]);
   const [selectedCalendar, setSelectedCalendar] = useState(null);
   const [timeSlots, setTimeSlots] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
+    console.log('useEffect -> axios');
+
     axios
       .get("http://localhost:3333/api/structure")
       .then(({ data }) => {
@@ -22,28 +25,39 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log(timeSlots);
+    console.log('useEffect -> selectedCalendar', selectedCalendar);
     if (!selectedCalendar) {
       return;
     }
 
-    setTimeSlots(
-      mapTimeSlots(
+    const timeSlots =  mapTimeSlots(
         selectedCalendar.startHour,
         selectedCalendar.endHour,
         selectedCalendar.range
-      )
     );
+    setTimeSlots(timeSlots);
   }, [selectedCalendar]);
 
+  useEffect(() => {
+    console.log('useEffect -> selectedDate, calendars', {selectedDate, calendars});
+    if(!selectedDate) {
+      return;
+    }
+
+    const formatedDate = formatDate(selectedDate);
+    const calendar = getReservation(calendars, formatedDate);
+    setSelectedCalendar(calendar);
+  }, [ calendars, selectedDate]);
+
   const handleDateChange = (date) => {
-    setSelectedCalendar(getReservation(calendars, formatDate(date)));
+    console.log('handleDateChange', date);
+    setSelectedDate(date);
   };
 
   return (
     <>
       <div className="container">
-        <DatepickerComponent onChangeDate={handleDateChange} />
+        <DatePickerComponent onChangeDate={handleDateChange} />
 
         {selectedCalendar &&
           selectedCalendar.categories &&
