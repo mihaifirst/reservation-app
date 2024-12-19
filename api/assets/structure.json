@@ -1,8 +1,8 @@
 {
-  "reservations": [
+  "calendars": [
     {
       "id": 1,
-      "date": "12/11/2024",
+      "date": "12/19/2024",
       "startHour": 8,
       "endHour": 22,
       "hourRange": 30,
@@ -16,6 +16,72 @@
               "occupiedSlots": [
                 {
                   "startTime": "08:00",
+                  "duration": 30
+                }
+              ]
+            },
+            {
+              "id": 2,
+              "occupiedSlots": [
+                {
+                  "startTime": "12:00",
+                  "duration": 30
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "title": "Fotbal",
+          "fields": [
+            {
+              "id": 1,
+              "occupiedSlots": []
+            },
+            {
+              "id": 2,
+              "occupiedSlots": [
+                {
+                  "startTime": "09:00",
+                  "duration": 30
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "title": "Tenis de picior",
+          "fields": [
+            {
+              "id": 1,
+              "occupiedSlots": []
+            },
+            {
+              "id": 2,
+              "occupiedSlots": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "date": "12/20/2024",
+      "startHour": 10,
+      "endHour": 16,
+      "hourRange": 30,
+      "categories": [
+        {
+          "id": 1,
+          "title": "Tenis",
+          "fields": [
+            {
+              "id": 1,
+              "occupiedSlots": [
+                {
+                  "startTime": "09:00",
                   "duration": 30
                 }
               ]

@@ -1,13 +1,16 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import setTimeSlots from "./helpers/setTimeSlots.js";
-import { getcalendar, abbreviation } from "./helpers/calendars.js";
+import mapTimeSlots from "./helpers/mapTimeSlots.js";
+import { getReservation, abbreviation } from "./helpers/reservations.js";
 import isSlotOccupied from "./helpers/fieldsHelpers.js";
 import DatepickerComponent from "./components/Datepicker/Datepickercomponent.jsx";
+import formatDate from "./helpers/calendar.helpers.js";
 
 function App() {
-  const [calendars, setCalendars] = useState(null);
+  const [calendars, setCalendars] = useState([]);
+  const [selectedCalendar, setSelectedCalendar] = useState(null);
+  const [timeSlots, setTimeSlots] = useState([]);
 
   useEffect(() => {
     axios
@@ -18,75 +21,91 @@ function App() {
       .catch((e) => console.log(e));
   }, []);
 
-  const calendar = getcalendar(calendars, "12/11/2024");
+  useEffect(() => {
+    console.log(timeSlots);
+    if (!selectedCalendar) {
+      return;
+    }
 
-  if (!calendar?.categories) {
-    return null;
-  }
+    setTimeSlots(
+      mapTimeSlots(
+        selectedCalendar.startHour,
+        selectedCalendar.endHour,
+        selectedCalendar.range
+      )
+    );
+  }, [selectedCalendar]);
 
-  const { startHour, endHour, range } = calendar;
-  const timeSlots = setTimeSlots(startHour, endHour, range);
+  const handleDateChange = (date) => {
+    setSelectedCalendar(getReservation(calendars, formatDate(date)));
+  };
 
   return (
     <>
       <div className="container">
-        <DatepickerComponent />
-        <table className="table" border={1}>
-          <thead>
-            <tr>
-              <td rowSpan={3}>Ora</td>
-              {calendar.categories.map((category) => (
-                <td key={category.id} colSpan={category.fields.length}>
-                  {category.title}
-                </td>
-              ))}
-            </tr>
-            <tr>
-              {calendar.categories.map((category) =>
-                category.fields.map((field) => (
-                  <td key={field.id} rowSpan={2}>
-                    {field.id}. {abbreviation(category.title)}
-                  </td>
-                ))
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {timeSlots.map((time) => (
-              <tr key={time}>
-                <td>{time}</td>
-                {calendar.categories.map((category) =>
-                  category.fields.map((field) => (
-                    <td
-                      key={`${category.id}-${field.id}`}
-                      className={
-                        isSlotOccupied(
-                          calendars,
-                          calendar.id,
-                          category.id,
-                          field.id,
-                          time
-                        )
-                          ? "slot-closed"
-                          : "slot-open"
-                      }
-                    >
-                      {isSlotOccupied(
-                        calendars,
-                        calendar.id,
-                        category.id,
-                        field.id,
-                        time
-                      )
-                        ? "Closed"
-                        : "Open"}
+        <DatepickerComponent onChangeDate={handleDateChange} />
+
+        {selectedCalendar &&
+          selectedCalendar.categories &&
+          timeSlots &&
+          timeSlots.length && (
+            <table className="table" border={1}>
+              <thead>
+                <tr>
+                  <td rowSpan={3}>Ora</td>
+                  {selectedCalendar.categories.map((category) => (
+                    <td key={category.id} colSpan={category.fields.length}>
+                      {category.title}
                     </td>
-                  ))
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  ))}
+                </tr>
+                <tr>
+                  {selectedCalendar.categories.map((category) =>
+                    category.fields.map((field) => (
+                      <td key={field.id} rowSpan={2}>
+                        {field.id}. {abbreviation(category.title)}
+                      </td>
+                    ))
+                  )}
+                </tr>
+              </thead>
+              <tbody>
+                {timeSlots.map((time) => (
+                  <tr key={time}>
+                    <td>{time}</td>
+                    {selectedCalendar.categories.map((category) =>
+                      category.fields.map((field) => (
+                        <td
+                          key={`${category.id}-${field.id}`}
+                          className={
+                            isSlotOccupied(
+                              calendars,
+                              selectedCalendar.id,
+                              category.id,
+                              field.id,
+                              time
+                            )
+                              ? "slot-closed"
+                              : "slot-open"
+                          }
+                        >
+                          {isSlotOccupied(
+                            calendars,
+                            selectedCalendar.id,
+                            category.id,
+                            field.id,
+                            time
+                          )
+                            ? "Closed"
+                            : "Open"}
+                        </td>
+                      ))
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
       </div>
     </>
   );

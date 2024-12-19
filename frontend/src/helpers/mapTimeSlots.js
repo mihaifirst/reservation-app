@@ -1,4 +1,4 @@
-export default function setTimeSlots(hour, end, range = 30) {
+export default function mapTimeSlots(hour, end, range = 30) {
   const result = [];
   let minutes = 0;
   for (let i = hour; i <= end; i++) {
