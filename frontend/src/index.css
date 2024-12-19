@@ -12,6 +12,12 @@ code {
     monospace;
 }
 
+.container {
+  display: flex;
+  width: 1200px;
+  justify-content: space-around;
+}
+
 .table {
   border-collapse: collapse;
 }
