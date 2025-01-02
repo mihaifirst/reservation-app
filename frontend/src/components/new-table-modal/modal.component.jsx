@@ -1,12 +1,12 @@
 import React from "react";
-import "./Modal.css";
+import "./modal.css";
 
-const Modal = ({ isOpen, onClose, children }) => {
+const Modal = ({ isOpen, onClose, onSubmit, children }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-backdrop" onClick={(e) => e.stopPropagation()}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-backdrop">
+      <div className="modal-content">
         <button className="close-button" onClick={onClose}>
           &times;
         </button>
@@ -14,6 +14,9 @@ const Modal = ({ isOpen, onClose, children }) => {
         <div className="modal-footer">
           <button className="cancel-button" onClick={onClose}>
             Cancel
+          </button>
+          <button className="create-button" onClick={onSubmit}>
+            Create Reservation
           </button>
         </div>
       </div>

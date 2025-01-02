@@ -6,7 +6,14 @@ import { getReservation, abbreviation } from "./helpers/reservations.js";
 import isSlotOccupied from "./helpers/fieldsHelpers.js";
 import DatePickerComponent from "./components/date-picker/date-picker.component.jsx";
 import formatDate from "./helpers/calendar.helpers.js";
-import Modal from "./components/new-table-modal/new-table-modal.component.jsx";
+import Modal from "./components/new-table-modal/modal.component.jsx";
+
+const modalDefaultFormFields = {
+  date: null,
+  startHour: 8,
+  endHour: 22,
+  hourRange: 30,
+};
 
 function App() {
   const [calendars, setCalendars] = useState([]);
@@ -14,6 +21,10 @@ function App() {
   const [timeSlots, setTimeSlots] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [modalFormFields, setModalFormFields] = useState(
+    modalDefaultFormFields
+  );
 
   useEffect(() => {
     // console.log("useEffect -> axios");
@@ -53,11 +64,22 @@ function App() {
     const calendar = getReservation(calendars, formatedDate);
 
     setSelectedCalendar(calendar);
+
+    setModalFormFields({ ...modalFormFields, date: formatedDate });
   }, [calendars, selectedDate]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
+
+  const handleChange = (event) => {
+    const { value, name } = event.target;
+    setModalFormFields({ ...modalFormFields, [name]: Number(value) });
+  };
+
+  console.log(modalFormFields);
+
+  const onSubmit = () => {};
 
   return (
     <>
@@ -68,8 +90,48 @@ function App() {
         />
         {!selectedCalendar && (
           <div>
-            <button onClick={() => setIsModalOpen(true)}>Open Modal</button>
-            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <button onClick={() => setIsModalOpen(true)}>
+              Create Reservation
+            </button>
+            <Modal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              onSubmit={onSubmit}
+            >
+              <form action="">
+                {selectedDate && (
+                  <span>
+                    Creaza tabel pentru data: {formatDate(selectedDate)}
+                  </span>
+                )}
+                <div>
+                  <label htmlFor="">StartHour</label>
+                  <input
+                    type="number"
+                    value={modalFormFields.startHour}
+                    name="startHour"
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="">EndHour</label>
+                  <input
+                    type="number"
+                    value={modalFormFields.endHour}
+                    name="endHour"
+                    onChange={handleChange}
+                  />
+                </div>
+                {/* <div>
+                  <label htmlFor="">HourRange</label>
+                  <input
+                    type="radio"
+                    value={modalFormFields.endHour}
+                    name="endHour"
+                    onChange={handleChange}
+                  />
+                </div> */}
+              </form>
               <h2>Modal Title</h2>
               <p>This is the modal content!</p>
             </Modal>
