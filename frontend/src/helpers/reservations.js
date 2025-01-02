@@ -2,8 +2,7 @@ export const getReservation = (reservations, date) => {
   if (!reservations) {
     return [];
   }
-  const reservation =
-    reservations.find((item) => item.date === date) || "no reservation";
+  const reservation = reservations.find((item) => item.date === date);
   return reservation;
 };
 

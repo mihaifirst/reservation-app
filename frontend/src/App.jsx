@@ -6,15 +6,17 @@ import { getReservation, abbreviation } from "./helpers/reservations.js";
 import isSlotOccupied from "./helpers/fieldsHelpers.js";
 import DatePickerComponent from "./components/date-picker/date-picker.component.jsx";
 import formatDate from "./helpers/calendar.helpers.js";
+import Modal from "./components/new-table-modal/new-table-modal.component.jsx";
 
 function App() {
   const [calendars, setCalendars] = useState([]);
   const [selectedCalendar, setSelectedCalendar] = useState(null);
   const [timeSlots, setTimeSlots] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    console.log('useEffect -> axios');
+    // console.log("useEffect -> axios");
 
     axios
       .get("http://localhost:3333/api/structure")
@@ -25,39 +27,54 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log('useEffect -> selectedCalendar', selectedCalendar);
+    // console.log("useEffect -> selectedCalendar", selectedCalendar);
     if (!selectedCalendar) {
       return;
     }
 
-    const timeSlots =  mapTimeSlots(
-        selectedCalendar.startHour,
-        selectedCalendar.endHour,
-        selectedCalendar.range
+    const timeSlots = mapTimeSlots(
+      selectedCalendar.startHour,
+      selectedCalendar.endHour,
+      selectedCalendar.range
     );
     setTimeSlots(timeSlots);
   }, [selectedCalendar]);
 
   useEffect(() => {
-    console.log('useEffect -> selectedDate, calendars', {selectedDate, calendars});
-    if(!selectedDate) {
+    if (!selectedDate) {
       return;
     }
 
     const formatedDate = formatDate(selectedDate);
+    // console.log("useEffect -> formatedDate, calendars", {
+    //   formatedDate,
+    // });
+
     const calendar = getReservation(calendars, formatedDate);
+
     setSelectedCalendar(calendar);
-  }, [ calendars, selectedDate]);
+  }, [calendars, selectedDate]);
 
   const handleDateChange = (date) => {
-    console.log('handleDateChange', date);
     setSelectedDate(date);
   };
 
   return (
     <>
       <div className="container">
-        <DatePickerComponent onChangeDate={handleDateChange} />
+        <DatePickerComponent
+          onChangeDate={handleDateChange}
+          className="datepicker"
+        />
+        {!selectedCalendar && (
+          <div>
+            <button onClick={() => setIsModalOpen(true)}>Open Modal</button>
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+              <h2>Modal Title</h2>
+              <p>This is the modal content!</p>
+            </Modal>
+          </div>
+        )}
 
         {selectedCalendar &&
           selectedCalendar.categories &&
