@@ -14,9 +14,9 @@ import Modal from "./components/new-table-modal/modal.component.jsx";
 
 const modalDefaultFormFields = {
   date: null,
-  startHour: 8,
-  endHour: 22,
-  hourRange: 30,
+  startHour: 12,
+  endHour: 18,
+  hourRange: 60,
 };
 
 function App() {
@@ -28,6 +28,10 @@ function App() {
   const [modalFormFields, setModalFormFields] = useState(
     modalDefaultFormFields
   );
+  const [newCategoryTitle, setNewCategoryTitle] = useState("");
+  const [nextCategoryId, setNextCategoryId] = useState(1);
+
+  const classes = "formInput categoryInput";
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -97,6 +101,30 @@ function App() {
     setIsModalOpen(false);
   };
 
+  const handleAddCategory = () => {
+    if (!newCategoryTitle) {
+      alert("Please enter a category title.");
+      return;
+    }
+
+    const updatedCalendar = {
+      ...selectedCalendar,
+      categories: [
+        ...selectedCalendar.categories,
+        { id: nextCategoryId, title: newCategoryTitle, fields: [] },
+      ],
+    };
+
+    setSelectedCalendar(updatedCalendar);
+    setNextCategoryId(nextCategoryId + 1);
+    setNewCategoryTitle("");
+    setIsModalOpen(false);
+  };
+
+  const newCategoryTitleFn = (event) => {
+    setNewCategoryTitle(event.target.value);
+  };
+
   return (
     <>
       <div className="container">
@@ -113,9 +141,7 @@ function App() {
               isOpen={isModalOpen}
               isClosed={closeModal}
               onSubmit={onSubmit}
-              submitButtonLabel={
-                selectedCalendar ? "Create Category" : "Create Table"
-              }
+              submitButtonLabel="Create Table"
             >
               <form className="formular">
                 {selectedDate && (
@@ -135,6 +161,7 @@ function App() {
                     min="6"
                     max="12"
                     onChange={handleChange}
+                    className="formInput"
                   />
                 </div>
                 <div className="formDiv">
@@ -146,6 +173,7 @@ function App() {
                     max="24"
                     name="endHour"
                     onChange={handleChange}
+                    className="formInput"
                   />
                 </div>
                 <label className="formDiv">
@@ -173,6 +201,36 @@ function App() {
                     <label htmlFor="hour30">60</label>
                   </div>
                 </label>
+              </form>
+            </Modal>
+          </div>
+        )}
+
+        {selectedCalendar && (
+          <div>
+            <button onClick={openModal} className="createReservation">
+              Create category
+            </button>
+            <Modal
+              isOpen={isModalOpen}
+              isClosed={closeModal}
+              onSubmit={handleAddCategory}
+              submitButtonLabel="Add Category"
+            >
+              <form className="formular">
+                <div className="formDiv">
+                  <label htmlFor="newCategoryTitle" className="formLabel">
+                    Category Title
+                  </label>
+                  <input
+                    className={classes}
+                    type="text"
+                    id="newCategoryTitle"
+                    value={newCategoryTitle}
+                    onChange={newCategoryTitleFn}
+                    placeholder="Enter category title"
+                  />
+                </div>
               </form>
             </Modal>
           </div>

@@ -17,17 +17,17 @@ const DatePickerComponent = ({ onChangeDate }) => {
 
   return (
     <div>
-      <h2>Select a date</h2>
-      <DatePicker
-        selected={selectedDate}
-        onChange={dateChange}
-        dateFormat="MM/dd/yyyy"
-      />
+      <h1>Select a date</h1>
       {selectedDate && (
         <p className={style.datePicker}>
           Selected date: {selectedDate.toLocaleDateString()}
         </p>
       )}
+      <DatePicker
+        selected={selectedDate}
+        onChange={dateChange}
+        dateFormat="MM/dd/yyyy"
+      />
     </div>
   );
 };

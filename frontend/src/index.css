@@ -48,7 +48,7 @@ code {
 .formular {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
   font-size: 24px;
 }
 
@@ -76,4 +76,14 @@ code {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 50px;
+}
+
+.formInput {
+  padding: 5px 10px;
+  font-size: 24px;
+}
+
+.categoryInput {
+  width: 200px;
 }
