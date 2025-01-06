@@ -66,6 +66,7 @@ function App() {
     }
 
     const formatedDate = formatDate(selectedDate);
+    console.log(formatedDate);
 
     const calendar = getCalendar(calendars, formatedDate);
 
