@@ -10,6 +10,12 @@
   align-items: center;
 }
 
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .modalContent {
   background: white;
   padding: 50px;
