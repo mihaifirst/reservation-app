@@ -1,62 +1,49 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import mapTimeSlots from "./helpers/mapTimeSlots.js";
 import {
-  getCalendar,
   abbreviation,
   createCalendar,
+  getCalendar,
 } from "./helpers/reservations.js";
 import isSlotOccupied from "./helpers/fieldsHelpers.js";
 import DatePickerComponent from "./components/date-picker/date-picker.component.jsx";
 import formatDate from "./helpers/calendar.helpers.js";
-import Modal from "./components/new-table-modal/modal.component.jsx";
+import CalendarFormModal from "./components/calendar-form-modal/calendar-form-modal.component";
 
-const modalDefaultFormFields = {
-  date: null,
-  startHour: 12,
-  endHour: 18,
-  hourRange: 60,
-};
+const API_URL = "http://localhost:3333/api/structure";
 
 function App() {
   const [calendars, setCalendars] = useState([]);
   const [selectedCalendar, setSelectedCalendar] = useState(null);
   const [timeSlots, setTimeSlots] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalFormFields, setModalFormFields] = useState(
-    modalDefaultFormFields
-  );
-  const [newCategoryTitle, setNewCategoryTitle] = useState("");
-  const [nextCategoryId, setNextCategoryId] = useState(1);
+  const [isCalendarFormModalOpen, setIsCalendarFormModalOpen] = useState(false);
+  // TODO
 
-  const classes = "formInput categoryInput";
+  // const [newCategoryTitle, setNewCategoryTitle] = useState("");
+  // const [nextCategoryId, setNextCategoryId] = useState(1);
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  useEffect(() => {
+  const getCalendarsFromApi = () => {
     axios
-      .get("http://localhost:3333/api/structure")
+      .get(API_URL)
       .then(({ data }) => {
         setCalendars(data.calendars);
       })
       .catch((e) => console.log(e));
+  };
+
+  useEffect(() => {
+    getCalendarsFromApi();
   }, []);
 
   useEffect(() => {
     if (!selectedCalendar) {
       return;
     }
+
     const { startHour, endHour, hourRange } = selectedCalendar;
     const timeSlots = mapTimeSlots(startHour, endHour, hourRange);
-
     setTimeSlots(timeSlots);
   }, [selectedCalendar, calendars]);
 
@@ -65,29 +52,25 @@ function App() {
       return;
     }
 
-    const formatedDate = formatDate(selectedDate);
-    console.log(formatedDate);
-
-    const calendar = getCalendar(calendars, formatedDate);
-
+    const formattedDate = formatDate(selectedDate);
+    const calendar = getCalendar(calendars, formattedDate);
     setSelectedCalendar(calendar);
-    setModalFormFields((fields) => ({
-      ...fields,
-      date: formatedDate,
-    }));
   }, [calendars, selectedDate]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
 
-  const handleChange = (event) => {
-    const { value, name } = event.target;
-    setModalFormFields({ ...modalFormFields, [name]: Number(value) });
+  const onCreateReservationClick = () => {
+    setIsCalendarFormModalOpen(true);
   };
 
-  const onSubmit = () => {
-    const { date, startHour, endHour, hourRange } = modalFormFields;
+  const onCloseCalendarFormModal = () => {
+    setIsCalendarFormModalOpen(false);
+  };
+
+  const onSubmitCalendarFormModal = (formFields) => {
+    const { date, startHour, endHour, hourRange } = formFields;
 
     const newReservations = createCalendar(
       calendars,
@@ -96,38 +79,36 @@ function App() {
       endHour,
       hourRange
     );
-    console.log({ newReservations });
-
     setCalendars(newReservations);
-    setIsModalOpen(false);
   };
 
-  const handleAddCategory = () => {
-    if (!newCategoryTitle) {
-      alert("Please enter a category title.");
-      return;
-    }
+  // TODO
+  // const newCategoryTitleFn = (event) => {
+  //   setNewCategoryTitle(event.target.value);
+  // };
 
-    const updatedCalendar = {
-      ...selectedCalendar,
-      categories: [
-        ...selectedCalendar.categories,
-        { id: nextCategoryId, title: newCategoryTitle, fields: [] },
-      ],
-    };
-
-    setSelectedCalendar(updatedCalendar);
-    setNextCategoryId(nextCategoryId + 1);
-    setNewCategoryTitle("");
-    setIsModalOpen(false);
-  };
-
-  const newCategoryTitleFn = (event) => {
-    setNewCategoryTitle(event.target.value);
-  };
+  // TODO
+  // const handleAddCategory = () => {
+  //   if (!newCategoryTitle) {
+  //     alert("Please enter a category title.");
+  //     return;
+  //   }
+  //
+  //   const updatedCalendar = {
+  //     ...selectedCalendar,
+  //     categories: [
+  //       ...selectedCalendar.categories,
+  //       { id: nextCategoryId, title: newCategoryTitle, fields: [] },
+  //     ],
+  //   };
+  //
+  //   setSelectedCalendar(updatedCalendar);
+  //   setNextCategoryId(nextCategoryId + 1);
+  //   setNewCategoryTitle("");
+  // };
 
   return (
-    <>
+    <Fragment>
       <div className="container">
         <DatePickerComponent
           onChangeDate={handleDateChange}
@@ -135,107 +116,51 @@ function App() {
         />
         {!selectedCalendar && (
           <div>
-            <button onClick={openModal} className="createReservation">
-              Create Reservation
-            </button>
-            <Modal
-              isOpen={isModalOpen}
-              isClosed={closeModal}
-              onSubmit={onSubmit}
-              submitButtonLabel="Create Table"
+            <button
+              onClick={onCreateReservationClick}
+              className="createReservation"
             >
-              <form className="formular">
-                {selectedDate && (
-                  <span className="createTable">
-                    Creaza tabel pentru data: {formatDate(selectedDate)}
-                  </span>
-                )}
-                <div className="formDiv">
-                  <label htmlFor="startHour" className="formLable">
-                    StartHour
-                  </label>
-
-                  <input
-                    type="number"
-                    value={modalFormFields.startHour}
-                    name="startHour"
-                    min="6"
-                    max="12"
-                    onChange={handleChange}
-                    className="formInput"
-                  />
-                </div>
-                <div className="formDiv">
-                  <label className="formLable">EndHour</label>
-                  <input
-                    type="number"
-                    value={modalFormFields.endHour}
-                    min="18"
-                    max="24"
-                    name="endHour"
-                    onChange={handleChange}
-                    className="formInput"
-                  />
-                </div>
-                <label className="formDiv">
-                  Hour Range:
-                  <div>
-                    <input
-                      type="radio"
-                      id="hour30"
-                      name="hourRange"
-                      value="30"
-                      checked={modalFormFields.hourRange === 30}
-                      onChange={handleChange}
-                    />
-                    <label htmlFor="hour30">30</label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      id="hour60"
-                      name="hourRange"
-                      value="60"
-                      checked={modalFormFields.hourRange === 60}
-                      onChange={handleChange}
-                    />
-                    <label htmlFor="hour30">60</label>
-                  </div>
-                </label>
-              </form>
-            </Modal>
+              Creeaza calendar
+            </button>
+            <CalendarFormModal
+              isOpen={isCalendarFormModalOpen}
+              onClose={onCloseCalendarFormModal}
+              onSubmit={onSubmitCalendarFormModal}
+              selectedDate={selectedDate}
+            ></CalendarFormModal>
           </div>
         )}
 
-        {selectedCalendar && (
-          <div>
-            <button onClick={openModal} className="createReservation">
-              Create category
-            </button>
-            <Modal
-              isOpen={isModalOpen}
-              isClosed={closeModal}
-              onSubmit={handleAddCategory}
-              submitButtonLabel="Add Category"
-            >
-              <form className="formular">
-                <div className="formDiv">
-                  <label htmlFor="newCategoryTitle" className="formLabel">
-                    Category Title
-                  </label>
-                  <input
-                    className={classes}
-                    type="text"
-                    id="newCategoryTitle"
-                    value={newCategoryTitle}
-                    onChange={newCategoryTitleFn}
-                    placeholder="Enter category title"
-                  />
-                </div>
-              </form>
-            </Modal>
-          </div>
-        )}
+        {/*TODO*/}
+        {/*{selectedCalendar && (*/}
+        {/*  <div>*/}
+        {/*    <button onClick={openModal} className="createReservation">*/}
+        {/*      Create category*/}
+        {/*    </button>*/}
+        {/*    <Modal*/}
+        {/*      isOpen={isModalOpen}*/}
+        {/*      isClosed={closeModal}*/}
+        {/*      onSubmit={handleAddCategory}*/}
+        {/*      submitButtonLabel="Add Category"*/}
+        {/*    >*/}
+        {/*      <form className="formular">*/}
+        {/*        <div className="formDiv">*/}
+        {/*          <label htmlFor="newCategoryTitle" className="formLabel">*/}
+        {/*            Category Title*/}
+        {/*          </label>*/}
+        {/*          <input*/}
+        {/*            className={classes}*/}
+        {/*            type="text"*/}
+        {/*            id="newCategoryTitle"*/}
+        {/*            value={newCategoryTitle}*/}
+        {/*            onChange={newCategoryTitleFn}*/}
+        {/*            placeholder="Enter category title"*/}
+        {/*          />*/}
+        {/*        </div>*/}
+        {/*      </form>*/}
+        {/*    </Modal>*/}
+        {/*  </div>*/}
+        {/*)}*/}
 
         {selectedCalendar && timeSlots && (
           <table className="table" border={1}>
@@ -296,7 +221,7 @@ function App() {
           </table>
         )}
       </div>
-    </>
+    </Fragment>
   );
 }
 
