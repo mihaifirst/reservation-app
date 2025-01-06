@@ -1,4 +1,4 @@
-export const getReservation = (reservations, date) => {
+export const getCalendar = (reservations, date) => {
   if (!reservations) {
     return [];
   }
@@ -13,4 +13,24 @@ export const abbreviation = (name) => {
   } else {
     return nameArr[0][0] + ". " + nameArr[nameArr.length - 1];
   }
+};
+
+export const createCalendar = (
+  reservations,
+  date,
+  startHour,
+  endHour,
+  hourRange
+) => {
+  const id = reservations.length + 1;
+  const newReservation = {
+    id,
+    date,
+    startHour,
+    endHour,
+    hourRange,
+    categories: [],
+  };
+
+  return [...reservations, newReservation];
 };

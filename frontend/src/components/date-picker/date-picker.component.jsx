@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import style from "./date-picker.module.css";
 
 const DatePickerComponent = ({ onChangeDate }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -11,9 +12,8 @@ const DatePickerComponent = ({ onChangeDate }) => {
   };
 
   useEffect(() => {
-    // console.log('DatePickerComponent -> useEffect -> selectedDate', selectedDate);
     onChangeDate(selectedDate);
-  }, [selectedDate]);
+  }, [selectedDate, onChangeDate]);
 
   return (
     <div>
@@ -24,7 +24,9 @@ const DatePickerComponent = ({ onChangeDate }) => {
         dateFormat="MM/dd/yyyy"
       />
       {selectedDate && (
-        <p>Selected date: {selectedDate.toLocaleDateString()}</p>
+        <p className={style.datePicker}>
+          Selected date: {selectedDate.toLocaleDateString()}
+        </p>
       )}
     </div>
   );

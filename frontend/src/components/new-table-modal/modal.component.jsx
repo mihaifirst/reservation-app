@@ -1,22 +1,22 @@
 import React from "react";
-import "./modal.css";
+import style from "./modal.module.css";
 
-const Modal = ({ isOpen, onClose, onSubmit, children }) => {
+const Modal = ({ isOpen, isClosed, onSubmit, children, submitButtonLabel }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal-content">
-        <button className="close-button" onClick={onClose}>
+    <div className={style.modalBackdrop}>
+      <div className={style.modalContent}>
+        <button className={style.closeButton} onClick={isClosed}>
           &times;
         </button>
         {children}
-        <div className="modal-footer">
-          <button className="cancel-button" onClick={onClose}>
+        <div className={style.modalFooter}>
+          <button className={style.cancelButton} onClick={isClosed}>
             Cancel
           </button>
-          <button className="create-button" onClick={onSubmit}>
-            Create Reservation
+          <button className={style.createButton} onClick={onSubmit}>
+            {submitButtonLabel}
           </button>
         </div>
       </div>

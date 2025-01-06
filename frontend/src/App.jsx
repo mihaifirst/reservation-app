@@ -2,7 +2,11 @@ import React from "react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import mapTimeSlots from "./helpers/mapTimeSlots.js";
-import { getReservation, abbreviation } from "./helpers/reservations.js";
+import {
+  getCalendar,
+  abbreviation,
+  createCalendar,
+} from "./helpers/reservations.js";
 import isSlotOccupied from "./helpers/fieldsHelpers.js";
 import DatePickerComponent from "./components/date-picker/date-picker.component.jsx";
 import formatDate from "./helpers/calendar.helpers.js";
@@ -21,14 +25,19 @@ function App() {
   const [timeSlots, setTimeSlots] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [modalFormFields, setModalFormFields] = useState(
     modalDefaultFormFields
   );
 
-  useEffect(() => {
-    // console.log("useEffect -> axios");
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  useEffect(() => {
     axios
       .get("http://localhost:3333/api/structure")
       .then(({ data }) => {
@@ -38,18 +47,14 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // console.log("useEffect -> selectedCalendar", selectedCalendar);
     if (!selectedCalendar) {
       return;
     }
+    const { startHour, endHour, hourRange } = selectedCalendar;
+    const timeSlots = mapTimeSlots(startHour, endHour, hourRange);
 
-    const timeSlots = mapTimeSlots(
-      selectedCalendar.startHour,
-      selectedCalendar.endHour,
-      selectedCalendar.range
-    );
     setTimeSlots(timeSlots);
-  }, [selectedCalendar]);
+  }, [selectedCalendar, calendars]);
 
   useEffect(() => {
     if (!selectedDate) {
@@ -57,15 +62,14 @@ function App() {
     }
 
     const formatedDate = formatDate(selectedDate);
-    // console.log("useEffect -> formatedDate, calendars", {
-    //   formatedDate,
-    // });
 
-    const calendar = getReservation(calendars, formatedDate);
+    const calendar = getCalendar(calendars, formatedDate);
 
     setSelectedCalendar(calendar);
-
-    setModalFormFields({ ...modalFormFields, date: formatedDate });
+    setModalFormFields((fields) => ({
+      ...fields,
+      date: formatedDate,
+    }));
   }, [calendars, selectedDate]);
 
   const handleDateChange = (date) => {
@@ -77,9 +81,21 @@ function App() {
     setModalFormFields({ ...modalFormFields, [name]: Number(value) });
   };
 
-  console.log(modalFormFields);
+  const onSubmit = () => {
+    const { date, startHour, endHour, hourRange } = modalFormFields;
 
-  const onSubmit = () => {};
+    const newReservations = createCalendar(
+      calendars,
+      date,
+      startHour,
+      endHour,
+      hourRange
+    );
+    console.log({ newReservations });
+
+    setCalendars(newReservations);
+    setIsModalOpen(false);
+  };
 
   return (
     <>
@@ -90,115 +106,136 @@ function App() {
         />
         {!selectedCalendar && (
           <div>
-            <button onClick={() => setIsModalOpen(true)}>
+            <button onClick={openModal} className="createReservation">
               Create Reservation
             </button>
             <Modal
               isOpen={isModalOpen}
-              onClose={() => setIsModalOpen(false)}
+              isClosed={closeModal}
               onSubmit={onSubmit}
+              submitButtonLabel={
+                selectedCalendar ? "Create Category" : "Create Table"
+              }
             >
-              <form action="">
+              <form className="formular">
                 {selectedDate && (
-                  <span>
+                  <span className="createTable">
                     Creaza tabel pentru data: {formatDate(selectedDate)}
                   </span>
                 )}
-                <div>
-                  <label htmlFor="">StartHour</label>
+                <div className="formDiv">
+                  <label htmlFor="startHour" className="formLable">
+                    StartHour
+                  </label>
+
                   <input
                     type="number"
                     value={modalFormFields.startHour}
                     name="startHour"
+                    min="6"
+                    max="12"
                     onChange={handleChange}
                   />
                 </div>
-                <div>
-                  <label htmlFor="">EndHour</label>
+                <div className="formDiv">
+                  <label className="formLable">EndHour</label>
                   <input
                     type="number"
                     value={modalFormFields.endHour}
+                    min="18"
+                    max="24"
                     name="endHour"
                     onChange={handleChange}
                   />
                 </div>
-                {/* <div>
-                  <label htmlFor="">HourRange</label>
-                  <input
-                    type="radio"
-                    value={modalFormFields.endHour}
-                    name="endHour"
-                    onChange={handleChange}
-                  />
-                </div> */}
+                <label className="formDiv">
+                  Hour Range:
+                  <div>
+                    <input
+                      type="radio"
+                      id="hour30"
+                      name="hourRange"
+                      value="30"
+                      checked={modalFormFields.hourRange === 30}
+                      onChange={handleChange}
+                    />
+                    <label htmlFor="hour30">30</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      id="hour60"
+                      name="hourRange"
+                      value="60"
+                      checked={modalFormFields.hourRange === 60}
+                      onChange={handleChange}
+                    />
+                    <label htmlFor="hour30">60</label>
+                  </div>
+                </label>
               </form>
-              <h2>Modal Title</h2>
-              <p>This is the modal content!</p>
             </Modal>
           </div>
         )}
 
-        {selectedCalendar &&
-          selectedCalendar.categories &&
-          timeSlots &&
-          timeSlots.length && (
-            <table className="table" border={1}>
-              <thead>
-                <tr>
-                  <td rowSpan={3}>Ora</td>
-                  {selectedCalendar.categories.map((category) => (
-                    <td key={category.id} colSpan={category.fields.length}>
-                      {category.title}
+        {selectedCalendar && timeSlots && (
+          <table className="table" border={1}>
+            <thead>
+              <tr>
+                <td rowSpan={3}>Ora</td>
+                {selectedCalendar.categories.map((category) => (
+                  <td key={category.id} colSpan={category.fields.length}>
+                    {category.title}
+                  </td>
+                ))}
+              </tr>
+              <tr>
+                {selectedCalendar.categories.map((category) =>
+                  category.fields.map((field) => (
+                    <td key={field.id} rowSpan={2}>
+                      {field.id}. {abbreviation(category.title)}
                     </td>
-                  ))}
-                </tr>
-                <tr>
+                  ))
+                )}
+              </tr>
+            </thead>
+            <tbody>
+              {timeSlots.map((time) => (
+                <tr key={time}>
+                  <td>{time}</td>
                   {selectedCalendar.categories.map((category) =>
                     category.fields.map((field) => (
-                      <td key={field.id} rowSpan={2}>
-                        {field.id}. {abbreviation(category.title)}
-                      </td>
-                    ))
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {timeSlots.map((time) => (
-                  <tr key={time}>
-                    <td>{time}</td>
-                    {selectedCalendar.categories.map((category) =>
-                      category.fields.map((field) => (
-                        <td
-                          key={`${category.id}-${field.id}`}
-                          className={
-                            isSlotOccupied(
-                              calendars,
-                              selectedCalendar.id,
-                              category.id,
-                              field.id,
-                              time
-                            )
-                              ? "slot-closed"
-                              : "slot-open"
-                          }
-                        >
-                          {isSlotOccupied(
+                      <td
+                        key={`${category.id}-${field.id}`}
+                        className={
+                          isSlotOccupied(
                             calendars,
                             selectedCalendar.id,
                             category.id,
                             field.id,
                             time
                           )
-                            ? "Closed"
-                            : "Open"}
-                        </td>
-                      ))
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+                            ? "slot-closed"
+                            : "slot-open"
+                        }
+                      >
+                        {isSlotOccupied(
+                          calendars,
+                          selectedCalendar.id,
+                          category.id,
+                          field.id,
+                          time
+                        )
+                          ? "Closed"
+                          : "Open"}
+                      </td>
+                    ))
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </>
   );
