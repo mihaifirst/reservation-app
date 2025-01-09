@@ -10,8 +10,8 @@ const modalDefaultFormFields = {
 };
 
 const CalendarFormModal = ({isOpen, onClose, selectedDate, onSubmit}) => {
-    const submitButtonLabel = 'Creeaza calendar';
     const modalTitleLabel = selectedDate && `Creaza tabel pentru data: ${formatDate(selectedDate)}`;
+    const submitButtonLabel = 'Creeaza calendar';
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [formFields, setFormFields] = useState(
         modalDefaultFormFields
@@ -34,6 +34,7 @@ const CalendarFormModal = ({isOpen, onClose, selectedDate, onSubmit}) => {
     const closeModal = () => {
         setIsModalOpen(false);
         onClose();
+        setFormFields(modalDefaultFormFields);
     };
 
     const onCloseHandler = () => {
