@@ -1,16 +1,12 @@
 import React, { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import timeslotsHelpers from "./helpers/timeslots.helpers.js";
-import {
-  abbreviation,
-  createCalendar,
-  getCalendar,
-} from "./helpers/reservations.helpers.js";
-import isSlotOccupied from "./helpers/fields.helpers.js";
+import { createCalendar, getCalendar } from "./helpers/reservations.helpers.js";
 import DatePickerComponent from "./components/date-picker/date-picker.component.jsx";
 import formatDate from "./helpers/calendar.helpers.js";
 import CalendarFormModal from "./components/calendar-form-modal/calendar-form-modal.component";
 import CategoryFormModal from "./components/category-form-modal/category-form-modal.component";
+import CalendarTable from "./components/calendar-table/calendar-table.component.jsx";
 
 const API_URL = "http://localhost:3333/api/structure";
 
@@ -93,15 +89,19 @@ function App() {
   const onSubmitCategoryFormModal = (formFields) => {
     const { title } = formFields;
 
-      const updatedCalendar = {
-        ...selectedCalendar,
-        categories: [
-          ...selectedCalendar.categories,
-          { id: selectedCalendar.categories.length + 1, title: title, fields: [] },
-        ],
-      };
+    const updatedCalendar = {
+      ...selectedCalendar,
+      categories: [
+        ...selectedCalendar.categories,
+        {
+          id: selectedCalendar.categories.length + 1,
+          title: title,
+          fields: [],
+        },
+      ],
+    };
 
-      setSelectedCalendar(updatedCalendar);
+    setSelectedCalendar(updatedCalendar);
   };
 
   return (
@@ -129,78 +129,30 @@ function App() {
         )}
 
         {selectedCalendar && (
-            <Fragment>
-              <div>
-                <button onClick={onCreateCategoryClick} className="createReservation">
-                  Creeaza categorie
-                </button>
+          <Fragment>
+            <div>
+              <button
+                onClick={onCreateCategoryClick}
+                className="createReservation"
+              >
+                Creeaza categorie
+              </button>
 
-                <CategoryFormModal
-                    isOpen={isCategoryFormModalOpen}
-                    onClose={onCloseCategoryFormModal}
-                    onSubmit={onSubmitCategoryFormModal}
-                ></CategoryFormModal>
-              </div>
+              <CategoryFormModal
+                isOpen={isCategoryFormModalOpen}
+                onClose={onCloseCategoryFormModal}
+                onSubmit={onSubmitCategoryFormModal}
+              ></CategoryFormModal>
+            </div>
 
-              {timeSlots && (
-                  <table className="table" border={1}>
-                    <thead>
-                    <tr>
-                      <td rowSpan={3}>Ora</td>
-                      {selectedCalendar.categories.map((category) => (
-                          <td key={category.id} colSpan={category.fields.length}>
-                            {category.title}
-                          </td>
-                      ))}
-                    </tr>
-                    <tr>
-                      {selectedCalendar.categories.map((category) =>
-                          category.fields.map((field) => (
-                              <td key={field.id} rowSpan={2}>
-                                {field.id}. {abbreviation(category.title)}
-                              </td>
-                          ))
-                      )}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {timeSlots.map((time) => (
-                        <tr key={time}>
-                          <td>{time}</td>
-                          {selectedCalendar.categories.map((category) =>
-                              category.fields.map((field) => (
-                                  <td
-                                      key={`${category.id}-${field.id}`}
-                                      className={
-                                        isSlotOccupied(
-                                            calendars,
-                                            selectedCalendar.id,
-                                            category.id,
-                                            field.id,
-                                            time
-                                        )
-                                            ? "slot-closed"
-                                            : "slot-open"
-                                      }
-                                  >
-                                    {isSlotOccupied(
-                                        calendars,
-                                        selectedCalendar.id,
-                                        category.id,
-                                        field.id,
-                                        time
-                                    )
-                                        ? "Closed"
-                                        : "Open"}
-                                  </td>
-                              ))
-                          )}
-                        </tr>
-                    ))}
-                    </tbody>
-                  </table>
-              )}
-            </Fragment>
+            {timeSlots && (
+              <CalendarTable
+                timeSlots={timeSlots}
+                selectedCalendar={selectedCalendar}
+                calendars={calendars}
+              />
+            )}
+          </Fragment>
         )}
       </div>
     </Fragment>
