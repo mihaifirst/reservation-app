@@ -1,4 +1,4 @@
-export default function mapTimeSlots(hour, end, range) {
+export default function timeslotsHelpers(hour, end, range) {
   if (!range) {
     return [];
   }
