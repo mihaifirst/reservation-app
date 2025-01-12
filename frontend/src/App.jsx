@@ -1,17 +1,14 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import axios from "axios";
 import timeslotsHelpers from "./helpers/timeslots.helpers.js";
-import {
-  createCalendar,
-  getCalendar,
-  deleteReservation,
-} from "./helpers/reservations.helpers.js";
+import {createCalendar, deleteReservation, getCalendar,} from "./helpers/reservations.helpers.js";
 import DatePickerComponent from "./components/date-picker/date-picker.component.jsx";
 import formatDate from "./helpers/calendar.helpers.js";
 import CalendarFormModal from "./components/calendar-form-modal/calendar-form-modal.component";
 import CategoryFormModal from "./components/category-form-modal/category-form-modal.component";
 import CalendarTable from "./components/calendar-table/calendar-table.component.jsx";
-import { createField, deleteFieldFn } from "./helpers/fields.helpers.js";
+import {createField, deleteFieldFn} from "./helpers/fields.helpers.js";
+import {createCategoryFn} from "./helpers/category.helpers";
 
 const API_URL = "http://localhost:3333/api/structure";
 
@@ -100,19 +97,8 @@ function App() {
   const onSubmitCategoryFormModal = (formFields) => {
     const { title } = formFields;
 
-    const updatedCalendar = {
-      ...selectedCalendar,
-      categories: [
-        ...selectedCalendar.categories,
-        {
-          id: selectedCalendar.categories.length + 1,
-          title: title,
-          fields: [],
-        },
-      ],
-    };
-
-    setSelectedCalendar(updatedCalendar);
+    const updatedCalendars = createCategoryFn(calendars, selectedCalendar.id, title);
+    setCalendars(updatedCalendars);
   };
 
   const addField = (categoryId) => {

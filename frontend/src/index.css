@@ -38,11 +38,12 @@ code {
 }
 
 .slot-open {
-  background-color: green;
+  background-color: #27ae60;
+
 }
 
 .slot-closed {
-  background-color: red;
+  background-color: #e74c3c;
 }
 
 .formular {

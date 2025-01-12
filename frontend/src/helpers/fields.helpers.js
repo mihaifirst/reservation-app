@@ -35,27 +35,29 @@ export default function isSlotOccupied(
 
 export const createField = (reservations, reservationId, categoryId) => {
   const result = [...reservations];
+
   const reservationIndex = result.findIndex(
     (reservation) => reservation.id === reservationId
   );
+
   if (reservationIndex === -1) {
     return;
   }
-
   const categoryIndex = result[reservationIndex].categories.findIndex(
     (category) => category.id === categoryId
   );
+
   if (categoryIndex === -1) {
     return;
   }
-  const category = result[reservationIndex].categories[categoryIndex];
-  const fieldId = category.fields.length + 1;
 
+  const category = result[reservationIndex].categories[categoryIndex];
+
+  const fieldId = category.fields.length + 1;
   category.fields.push({
     id: fieldId,
     occupiedSlots: [],
   });
-
   return result;
 };
 

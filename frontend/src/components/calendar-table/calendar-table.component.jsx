@@ -66,8 +66,8 @@ const CalendarTable = ({
                     field.id,
                     time
                   )
-                    ? "Closed"
-                    : "Open"}
+                    ? "Ocupat"
+                    : "Liber"}
                 </td>
               ))
             )}
