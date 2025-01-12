@@ -10,21 +10,13 @@ import CalendarTable from "./components/calendar-table/calendar-table.component.
 import {createField, deleteFieldFn} from "./helpers/fields.helpers.js";
 import {createCategoryFn} from "./helpers/category.helpers";
 import ConfirmationModal from "./components/confirmation-modal/confirmation-modal.component";
+import {
+    CONFIRMATION_MODAL_CONTEXT,
+    confirmationModalStateDefault,
+    deleteCalendarConfirmationModal
+} from "./helpers/confirmation-modal.helpers";
 
 const API_URL = "http://localhost:3333/api/structure";
-
-const confirmationModalStateDefault = {
-    isOpen: false,
-    submitButtonLabel: '',
-    modalTitleLabel: '',
-    modalMessage: '',
-    context: '',
-}
-
-const CONFIRMATION_MODAL_CONTEXT = {
-    DELETE_TABLE : 'DELETE_TABLE',
-    DELETE_CATEGORY: 'DELETE_CATEGORY'
-}
 
 function App() {
     const [calendars, setCalendars] = useState([]);
@@ -73,11 +65,7 @@ function App() {
     };
 
     const deleteCalendar = () => {
-        buildConfirmationModal(
-            CONFIRMATION_MODAL_CONTEXT.DELETE_TABLE,
-            'Sterge tabel',
-            'Esti sigur ca vrei sa stergi tabelul?',
-            'Sterge');
+        setConfirmationModalState(deleteCalendarConfirmationModal());
     };
 
     /* Reservations methods */
@@ -139,14 +127,6 @@ function App() {
     };
 
     /* Confirmation modal methods */
-    const onOpenConfirmationModal = () => {
-        setConfirmationModalState(
-            {
-                isOpen: true
-            }
-        );
-    };
-
     const onCloseConfirmationModal = () => {
         setConfirmationModalState(
             {
@@ -163,16 +143,6 @@ function App() {
                 setTimeSlots([]);
                 break;
         }
-    }
-
-    const buildConfirmationModal = (context, modalTitleLabel, modalMessage, submitButtonLabel) => {
-        setConfirmationModalState({
-            context,
-            modalTitleLabel,
-            modalMessage,
-            submitButtonLabel,
-            isOpen: true,
-        });
     }
 
     return (
