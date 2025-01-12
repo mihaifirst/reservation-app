@@ -1,6 +1,8 @@
 import React from "react";
 import isSlotOccupied from "../../helpers/fields.helpers.js";
 import { abbreviation } from "../../helpers/reservations.helpers.js";
+import style from "./calendar-table.module.css";
+import AddBoxIcon from "@mui/icons-material/AddBox";
 
 const CalendarTable = ({ timeSlots, selectedCalendar, calendars }) => {
   return (
@@ -10,7 +12,10 @@ const CalendarTable = ({ timeSlots, selectedCalendar, calendars }) => {
           <td rowSpan={3}>Ora</td>
           {selectedCalendar.categories.map((category) => (
             <td key={category.id} colSpan={category.fields.length}>
-              {category.title}
+              <div className={style.calendarTD}>
+                {category.title}
+                <AddBoxIcon />
+              </div>
             </td>
           ))}
         </tr>

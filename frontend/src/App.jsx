@@ -55,6 +55,18 @@ function App() {
     setSelectedDate(date);
   };
 
+  const deleteTable = () => {
+    if (!selectedCalendar) return;
+
+    const updatedCalendars = calendars.filter(
+      (calendar) => calendar !== selectedCalendar
+    );
+
+    setCalendars(updatedCalendars);
+    setSelectedCalendar(null);
+    setTimeSlots([]);
+  };
+
   /* Reservations methods */
   const onCreateReservationClick = () => {
     setIsCalendarFormModalOpen(true);
@@ -136,6 +148,9 @@ function App() {
                 className="createReservation"
               >
                 Creeaza categorie
+              </button>
+              <button onClick={deleteTable} className="createReservation">
+                Sterge tabel
               </button>
 
               <CategoryFormModal
