@@ -3,8 +3,15 @@ import isSlotOccupied from "../../helpers/fields.helpers.js";
 import { abbreviation } from "../../helpers/reservations.helpers.js";
 import style from "./calendar-table.module.css";
 import AddBoxIcon from "@mui/icons-material/AddBox";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-const CalendarTable = ({ timeSlots, selectedCalendar, calendars }) => {
+const CalendarTable = ({
+  timeSlots,
+  selectedCalendar,
+  calendars,
+  addField,
+  deleteField,
+}) => {
   return (
     <table className="table" border={1}>
       <thead>
@@ -14,7 +21,7 @@ const CalendarTable = ({ timeSlots, selectedCalendar, calendars }) => {
             <td key={category.id} colSpan={category.fields.length}>
               <div className={style.calendarTD}>
                 {category.title}
-                <AddBoxIcon />
+                <AddBoxIcon onClick={() => addField(category.id)} />
               </div>
             </td>
           ))}
@@ -24,6 +31,9 @@ const CalendarTable = ({ timeSlots, selectedCalendar, calendars }) => {
             category.fields.map((field) => (
               <td key={field.id} rowSpan={2}>
                 {field.id} {abbreviation(category.title)}
+                <DeleteIcon
+                  onClick={() => deleteField(category.id, field.id)}
+                />
               </td>
             ))
           )}

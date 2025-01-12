@@ -1,12 +1,17 @@
 import React, { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import timeslotsHelpers from "./helpers/timeslots.helpers.js";
-import { createCalendar, getCalendar } from "./helpers/reservations.helpers.js";
+import {
+  createCalendar,
+  getCalendar,
+  deleteReservation,
+} from "./helpers/reservations.helpers.js";
 import DatePickerComponent from "./components/date-picker/date-picker.component.jsx";
 import formatDate from "./helpers/calendar.helpers.js";
 import CalendarFormModal from "./components/calendar-form-modal/calendar-form-modal.component";
 import CategoryFormModal from "./components/category-form-modal/category-form-modal.component";
 import CalendarTable from "./components/calendar-table/calendar-table.component.jsx";
+import { createField, deleteFieldFn } from "./helpers/fields.helpers.js";
 
 const API_URL = "http://localhost:3333/api/structure";
 
@@ -55,15 +60,9 @@ function App() {
     setSelectedDate(date);
   };
 
-  const deleteTable = () => {
-    if (!selectedCalendar) return;
-
-    const updatedCalendars = calendars.filter(
-      (calendar) => calendar !== selectedCalendar
-    );
-
+  const deleteCalendar = () => {
+    const updatedCalendars = deleteReservation(calendars, selectedCalendar.id);
     setCalendars(updatedCalendars);
-    setSelectedCalendar(null);
     setTimeSlots([]);
   };
 
@@ -116,6 +115,26 @@ function App() {
     setSelectedCalendar(updatedCalendar);
   };
 
+  const addField = (categoryId) => {
+    const updatedCalendars = createField(
+      calendars,
+      selectedCalendar.id,
+      categoryId
+    );
+
+    setCalendars(updatedCalendars);
+  };
+
+  const deleteField = (categoryId, fieldId) => {
+    const updatedCalendars = deleteFieldFn(
+      calendars,
+      selectedCalendar.id,
+      categoryId,
+      fieldId
+    );
+    setCalendars(updatedCalendars);
+  };
+
   return (
     <Fragment>
       <div className="container">
@@ -149,7 +168,7 @@ function App() {
               >
                 Creeaza categorie
               </button>
-              <button onClick={deleteTable} className="createReservation">
+              <button onClick={deleteCalendar} className="createReservation">
                 Sterge tabel
               </button>
 
@@ -165,6 +184,8 @@ function App() {
                 timeSlots={timeSlots}
                 selectedCalendar={selectedCalendar}
                 calendars={calendars}
+                addField={addField}
+                deleteField={deleteField}
               />
             )}
           </Fragment>

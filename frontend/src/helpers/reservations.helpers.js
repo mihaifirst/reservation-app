@@ -34,3 +34,18 @@ export const createCalendar = (
 
   return [...reservations, newReservation];
 };
+
+export const deleteReservation = (reservations, reservationId) => {
+  const result = [...reservations];
+  const reservationIndex = result.findIndex(
+    (reservation) => reservation.id === reservationId
+  );
+
+  if (reservationIndex === -1) {
+    return;
+  }
+
+  result.splice(reservationIndex, 1);
+
+  return result;
+};
