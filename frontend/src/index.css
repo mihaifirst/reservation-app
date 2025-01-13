@@ -39,7 +39,6 @@ code {
 
 .slot-open {
   background-color: #27ae60;
-
 }
 
 .slot-closed {
@@ -87,4 +86,9 @@ code {
 
 .categoryInput {
   width: 200px;
+}
+
+.listButtons {
+  display: flex;
+  flex-direction: column;
 }
