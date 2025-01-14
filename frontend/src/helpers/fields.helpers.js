@@ -5,26 +5,31 @@ export default function isSlotOccupied(
   fieldId,
   time
 ) {
-  const reservation = reservations.find(
+  const result = [...reservations];
+  const reservationIndex = result.findIndex(
     (reservation) => reservation.id === reservationId
   );
-  if (!reservation) {
+  if (reservationIndex === -1) {
     return;
   }
 
-  const category = reservation.categories.find(
+  const categoryIndex = result[reservationIndex].categories.findIndex(
     (category) => category.id === categoryId
   );
-  if (!category) {
+  if (categoryIndex === -1) {
     return;
   }
 
-  const field = category.fields.find((field) => field.id === fieldId);
-  if (!field) {
+  const fieldIndex = result[reservationIndex].categories[
+    categoryIndex
+  ].fields.findIndex((field) => field.id === fieldId);
+  if (fieldIndex === -1) {
     return;
   }
 
-  const slot = field.occupiedSlots.find((slot) => slot.startTime === time);
+  const slot = result[reservationIndex].categories[categoryIndex].fields[
+    fieldIndex
+  ].occupiedSlots.find((slot) => slot.startTime === time);
 
   if (!slot) {
     return false;

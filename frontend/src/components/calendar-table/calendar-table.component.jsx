@@ -10,6 +10,7 @@ const CalendarTable = ({
   selectedCalendar,
   calendars,
   addField,
+  deleteCategory,
   deleteField,
 }) => {
   return (
@@ -21,6 +22,7 @@ const CalendarTable = ({
             <td key={category.id} colSpan={category.fields.length}>
               <div className={style.calendarTD}>
                 {category.title}
+                <DeleteIcon onClick={() => deleteCategory(category.id)} />
                 <AddBoxIcon onClick={() => addField(category.id)} />
               </div>
             </td>

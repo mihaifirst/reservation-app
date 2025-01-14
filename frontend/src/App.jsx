@@ -3,7 +3,7 @@ import axios from "axios";
 import timeslotsHelpers from "./helpers/timeslots.helpers.js";
 import {
   createCalendar,
-  deleteReservation,
+  deleteCalendar,
   getCalendar,
 } from "./helpers/reservations.helpers.js";
 import DatePickerComponent from "./components/date-picker/date-picker.component.jsx";
@@ -12,12 +12,13 @@ import CalendarFormModal from "./components/calendar-form-modal/calendar-form-mo
 import CategoryFormModal from "./components/category-form-modal/category-form-modal.component";
 import CalendarTable from "./components/calendar-table/calendar-table.component.jsx";
 import { createField, deleteFieldFn } from "./helpers/fields.helpers.js";
-import { createCategoryFn } from "./helpers/category.helpers";
+import { createCategoryFn, deleteCategoryFn } from "./helpers/category.helpers";
 import ConfirmationModal from "./components/confirmation-modal/confirmation-modal.component";
 import {
   CONFIRMATION_MODAL_CONTEXT,
   confirmationModalStateDefault,
   deleteCalendarConfirmationModal,
+  deleteCategoryConfirmationModal,
 } from "./helpers/confirmation-modal.helpers";
 
 const API_URL = "http://localhost:3333/api/structure";
@@ -70,7 +71,7 @@ function App() {
     setSelectedDate(date);
   };
 
-  const deleteCalendar = () => {
+  const deleteCalendarModal = () => {
     setConfirmationModalState(deleteCalendarConfirmationModal());
   };
 
@@ -136,6 +137,10 @@ function App() {
     setCalendars(updatedCalendars);
   };
 
+  const deleteCategory = (categoryId) => {
+    setConfirmationModalState(deleteCategoryConfirmationModal(categoryId));
+  };
+
   /* Confirmation modal methods */
   const onCloseConfirmationModal = () => {
     setConfirmationModalState({
@@ -146,15 +151,22 @@ function App() {
   const onSubmitConfirmationModal = () => {
     switch (confirmationModalState.context) {
       case CONFIRMATION_MODAL_CONTEXT.DELETE_TABLE:
-        const updatedCalendars = deleteReservation(
-          calendars,
-          selectedCalendar.id
-        );
+        const updatedCalendars = deleteCalendar(calendars, selectedCalendar.id);
         setCalendars(updatedCalendars);
         setTimeSlots([]);
         break;
+      case CONFIRMATION_MODAL_CONTEXT.DELETE_CATEGORY:
+        const updatedCategory = deleteCategoryFn(
+          calendars,
+          selectedCalendar.id,
+          confirmationModalState.data.categoryId
+        );
+        setCalendars(updatedCategory);
+        break;
       default:
     }
+
+    setConfirmationModalState(confirmationModalStateDefault);
   };
 
   return (
@@ -199,7 +211,10 @@ function App() {
                 >
                   Creeaza categorie
                 </button>
-                <button onClick={deleteCalendar} className="createReservation">
+                <button
+                  onClick={deleteCalendarModal}
+                  className="deleteReservation"
+                >
                   Sterge tabel
                 </button>
               </div>
@@ -218,6 +233,7 @@ function App() {
                 calendars={calendars}
                 addField={addField}
                 deleteField={deleteField}
+                deleteCategory={deleteCategory}
               />
             )}
           </Fragment>

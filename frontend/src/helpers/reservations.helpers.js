@@ -1,8 +1,9 @@
 export const getCalendar = (reservations, date) => {
+  const result = [...reservations];
   if (!reservations) {
     return [];
   }
-  const reservation = reservations.find((item) => item.date === date);
+  const reservation = result.find((item) => item.date === date);
   return reservation;
 };
 
@@ -35,7 +36,7 @@ export const createCalendar = (
   return [...reservations, newReservation];
 };
 
-export const deleteReservation = (reservations, reservationId) => {
+export const deleteCalendar = (reservations, reservationId) => {
   const result = [...reservations];
   const reservationIndex = result.findIndex(
     (reservation) => reservation.id === reservationId
