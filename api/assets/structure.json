@@ -69,7 +69,7 @@
     {
       "id": 2,
       "date": "14/01/2025",
-      "startHour": 10,
+      "startHour": 8,
       "endHour": 16,
       "hourRange": 30,
       "categories": [

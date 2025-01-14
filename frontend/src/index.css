@@ -35,6 +35,9 @@ code {
 
 .table tr td {
   padding: 10px;
+  user-select: none;
+  cursor: pointer;
+  transition: all 0.3s ease-in;
 }
 
 .slot-open {

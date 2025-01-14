@@ -1,4 +1,4 @@
-export default function timeslotsHelpers(hour, end, range) {
+export const timeSlotsHelpers = (hour, end, range) => {
   if (!range) {
     return [];
   }
@@ -18,7 +18,7 @@ export default function timeslotsHelpers(hour, end, range) {
     i--;
   }
   return result;
-}
+};
 
 function doubleDigits(input) {
   if (input < 10) {
@@ -26,3 +26,50 @@ function doubleDigits(input) {
   }
   return input;
 }
+
+export const occupySlotFn = (
+  reservations,
+  reservationId,
+  categoryId,
+  fieldId,
+  time
+) => {
+  const result = [...reservations];
+
+  const reservationIndex = result.findIndex(
+    (reservation) => reservation.id === reservationId
+  );
+
+  if (reservationIndex === -1) {
+    return;
+  }
+  const categoryIndex = result[reservationIndex].categories.findIndex(
+    (category) => category.id === categoryId
+  );
+
+  if (categoryIndex === -1) {
+    return;
+  }
+
+  const category = result[reservationIndex].categories[categoryIndex];
+  const fieldIndex = category.fields.findIndex((field) => field.id === fieldId);
+
+  if (fieldIndex === -1) {
+    return;
+  }
+
+  const slotIndex = category.fields[fieldIndex].occupiedSlots.findIndex(
+    (slot) => slot.startTime === time
+  );
+
+  if (slotIndex > -1) {
+    category.fields[fieldIndex].occupiedSlots.splice(slotIndex, 1);
+  } else {
+    category.fields[fieldIndex].occupiedSlots.push({
+      startTime: time,
+      duration: 30,
+    });
+  }
+
+  return result;
+};

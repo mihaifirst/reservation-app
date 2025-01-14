@@ -12,6 +12,7 @@ const CalendarTable = ({
   addField,
   deleteCategory,
   deleteField,
+  occupySlot,
 }) => {
   return (
     <table className="table" border={1}>
@@ -48,6 +49,7 @@ const CalendarTable = ({
             {selectedCalendar.categories.map((category) =>
               category.fields.map((field) => (
                 <td
+                  onClick={() => occupySlot(category.id, field.id, time)}
                   key={`${category.id}-${field.id}`}
                   className={
                     isSlotOccupied(

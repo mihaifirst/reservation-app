@@ -1,6 +1,9 @@
 import React, { Fragment, useEffect, useState } from "react";
 import axios from "axios";
-import timeslotsHelpers from "./helpers/timeslots.helpers.js";
+import {
+  occupySlotFn,
+  timeSlotsHelpers,
+} from "../src/helpers/timeslots.helpers.js";
 import {
   createCalendar,
   deleteCalendar,
@@ -54,7 +57,7 @@ function App() {
     }
 
     const { startHour, endHour, hourRange } = selectedCalendar;
-    const timeSlots = timeslotsHelpers(startHour, endHour, hourRange);
+    const timeSlots = timeSlotsHelpers(startHour, endHour, hourRange);
     setTimeSlots(timeSlots);
   }, [selectedCalendar, calendars]);
 
@@ -175,6 +178,17 @@ function App() {
     setConfirmationModalState(confirmationModalStateDefault);
   };
 
+  const onHandleOccupySlot = (categoryId, fieldId, time) => {
+    const occupiedSlots = occupySlotFn(
+      calendars,
+      selectedCalendar.id,
+      categoryId,
+      fieldId,
+      time
+    );
+    setCalendars(occupiedSlots);
+  };
+
   return (
     <Fragment>
       <ConfirmationModal
@@ -240,7 +254,9 @@ function App() {
                 addField={addField}
                 deleteField={deleteField}
                 deleteCategory={deleteCategory}
-                // onHandleDeleteCategory de modificat functiile
+                occupySlot={onHandleOccupySlot}
+                //TODO
+                //   onHandleDeleteCategory de modificat functiile
               />
             )}
           </Fragment>
