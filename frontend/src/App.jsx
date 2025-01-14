@@ -19,6 +19,7 @@ import {
   confirmationModalStateDefault,
   deleteCalendarConfirmationModal,
   deleteCategoryConfirmationModal,
+  deleteFieldConfirmationModal,
 } from "./helpers/confirmation-modal.helpers";
 
 const API_URL = "http://localhost:3333/api/structure";
@@ -128,13 +129,9 @@ function App() {
   };
 
   const deleteField = (categoryId, fieldId) => {
-    const updatedCalendars = deleteFieldFn(
-      calendars,
-      selectedCalendar.id,
-      categoryId,
-      fieldId
+    setConfirmationModalState(
+      deleteFieldConfirmationModal(categoryId, fieldId)
     );
-    setCalendars(updatedCalendars);
   };
 
   const deleteCategory = (categoryId) => {
@@ -162,6 +159,15 @@ function App() {
           confirmationModalState.data.categoryId
         );
         setCalendars(updatedCategory);
+        break;
+      case CONFIRMATION_MODAL_CONTEXT.DELETE_FIELD:
+        const updatedFields = deleteFieldFn(
+          calendars,
+          selectedCalendar.id,
+          confirmationModalState.data.categoryId,
+          confirmationModalState.data.fieldId
+        );
+        setCalendars(updatedFields);
         break;
       default:
     }
@@ -234,6 +240,7 @@ function App() {
                 addField={addField}
                 deleteField={deleteField}
                 deleteCategory={deleteCategory}
+                // onHandleDeleteCategory de modificat functiile
               />
             )}
           </Fragment>

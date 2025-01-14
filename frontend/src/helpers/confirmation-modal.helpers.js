@@ -32,12 +32,13 @@ export const deleteCategoryConfirmationModal = (categoryId) => {
   );
 };
 
-export const deleteFieldConfirmationModal = () => {
+export const deleteFieldConfirmationModal = (categoryId, fieldId) => {
   return buildConfirmationModal(
     CONFIRMATION_MODAL_CONTEXT.DELETE_FIELD,
-    "Sterge Fieldul",
-    "Esti sigur ca vrei sa stergi fieldul?",
-    "Sterge"
+    "Sterge terenul",
+    "Esti sigur ca vrei sa stergi terenul?",
+    "Sterge",
+    { categoryId, fieldId }
   );
 };
 
