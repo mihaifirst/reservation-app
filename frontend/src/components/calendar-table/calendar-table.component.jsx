@@ -33,10 +33,12 @@ const CalendarTable = ({
           {selectedCalendar.categories.map((category) =>
             category.fields.map((field) => (
               <td key={field.id} rowSpan={2}>
-                {field.id} {abbreviation(category.title)}
-                <DeleteIcon
-                  onClick={() => deleteField(category.id, field.id)}
-                />
+                <div className={style.fieldsRow}>
+                  {field.id} {abbreviation(category.title)}
+                  <DeleteIcon
+                    onClick={() => deleteField(category.id, field.id)}
+                  />
+                </div>
               </td>
             ))
           )}
