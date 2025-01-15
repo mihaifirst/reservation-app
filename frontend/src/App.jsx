@@ -25,7 +25,7 @@ import {
   deleteFieldConfirmationModal,
 } from "./helpers/confirmation-modal.helpers";
 
-const API_URL = "http://localhost:3333/api/structure";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function App() {
   const [calendars, setCalendars] = useState([]);
@@ -40,7 +40,7 @@ function App() {
 
   const getCalendarsFromApi = () => {
     axios
-      .get(API_URL)
+      .get(apiUrl)
       .then(({ data }) => {
         setCalendars(data.calendars);
       })
