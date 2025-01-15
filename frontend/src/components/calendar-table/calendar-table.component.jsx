@@ -1,6 +1,6 @@
 import React from "react";
 import isSlotOccupied from "../../helpers/fields.helpers.js";
-import { abbreviation } from "../../helpers/reservations.helpers.js";
+import { abbreviation } from "../../helpers/calendars.helpers.js";
 import style from "./calendar-table.module.css";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import DeleteIcon from "@mui/icons-material/Delete";

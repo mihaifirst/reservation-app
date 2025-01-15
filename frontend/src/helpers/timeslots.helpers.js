@@ -28,22 +28,22 @@ function doubleDigits(input) {
 }
 
 export const occupySlotFn = (
-  reservations,
-  reservationId,
+  calendars,
+  calendarId,
   categoryId,
   fieldId,
   time
 ) => {
-  const result = [...reservations];
+  const result = [...calendars];
 
-  const reservationIndex = result.findIndex(
-    (reservation) => reservation.id === reservationId
+  const calendarIndex = result.findIndex(
+    (calendar) => calendar.id === calendarId
   );
 
-  if (reservationIndex === -1) {
+  if (calendarIndex === -1) {
     return;
   }
-  const categoryIndex = result[reservationIndex].categories.findIndex(
+  const categoryIndex = result[calendarIndex].categories.findIndex(
     (category) => category.id === categoryId
   );
 
@@ -51,7 +51,7 @@ export const occupySlotFn = (
     return;
   }
 
-  const category = result[reservationIndex].categories[categoryIndex];
+  const category = result[calendarIndex].categories[categoryIndex];
   const fieldIndex = category.fields.findIndex((field) => field.id === fieldId);
 
   if (fieldIndex === -1) {

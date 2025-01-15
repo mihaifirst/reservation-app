@@ -8,7 +8,7 @@ import {
   createCalendar,
   deleteCalendar,
   getCalendar,
-} from "./helpers/reservations.helpers.js";
+} from "./helpers/calendars.helpers.js";
 import DatePickerComponent from "./components/date-picker/date-picker.component.jsx";
 import formatDate from "./helpers/calendar.helpers.js";
 import CalendarFormModal from "./components/calendar-form-modal/calendar-form-modal.component";
@@ -79,8 +79,8 @@ function App() {
     setConfirmationModalState(deleteCalendarConfirmationModal());
   };
 
-  /* Reservations methods */
-  const onCreateReservationClick = () => {
+  /* calendars methods */
+  const onCreatecalendarClick = () => {
     setIsCalendarFormModalOpen(true);
   };
 
@@ -91,14 +91,14 @@ function App() {
   const onSubmitCalendarFormModal = (formFields) => {
     const { date, startHour, endHour, hourRange } = formFields;
 
-    const newReservations = createCalendar(
+    const newcalendars = createCalendar(
       calendars,
       date,
       startHour,
       endHour,
       hourRange
     );
-    setCalendars(newReservations);
+    setCalendars(newcalendars);
   };
 
   /* Category methods */
@@ -206,10 +206,7 @@ function App() {
         />
         {!selectedCalendar && (
           <div>
-            <button
-              onClick={onCreateReservationClick}
-              className="createReservation"
-            >
+            <button onClick={onCreatecalendarClick} className="createcalendar">
               Creeaza calendar
             </button>
             <CalendarFormModal
@@ -227,13 +224,13 @@ function App() {
               <div className="listButtons">
                 <button
                   onClick={onCreateCategoryClick}
-                  className="createReservation"
+                  className="createcalendar"
                 >
                   Creeaza categorie
                 </button>
                 <button
                   onClick={deleteCalendarModal}
-                  className="deleteReservation"
+                  className="deletecalendar"
                 >
                   Sterge tabel
                 </button>

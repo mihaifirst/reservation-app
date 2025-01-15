@@ -1,33 +1,33 @@
 export default function isSlotOccupied(
-  reservations,
-  reservationId,
+  calendars,
+  calendarId,
   categoryId,
   fieldId,
   time
 ) {
-  const result = [...reservations];
-  const reservationIndex = result.findIndex(
-    (reservation) => reservation.id === reservationId
+  const result = [...calendars];
+  const calendarIndex = result.findIndex(
+    (calendar) => calendar.id === calendarId
   );
-  if (reservationIndex === -1) {
+  if (calendarIndex === -1) {
     return;
   }
 
-  const categoryIndex = result[reservationIndex].categories.findIndex(
+  const categoryIndex = result[calendarIndex].categories.findIndex(
     (category) => category.id === categoryId
   );
   if (categoryIndex === -1) {
     return;
   }
 
-  const fieldIndex = result[reservationIndex].categories[
+  const fieldIndex = result[calendarIndex].categories[
     categoryIndex
   ].fields.findIndex((field) => field.id === fieldId);
   if (fieldIndex === -1) {
     return;
   }
 
-  const slot = result[reservationIndex].categories[categoryIndex].fields[
+  const slot = result[calendarIndex].categories[categoryIndex].fields[
     fieldIndex
   ].occupiedSlots.find((slot) => slot.startTime === time);
 
@@ -38,17 +38,17 @@ export default function isSlotOccupied(
   return slot.startTime === time;
 }
 
-export const createField = (reservations, reservationId, categoryId) => {
-  const result = [...reservations];
+export const createField = (calendars, calendarId, categoryId) => {
+  const result = [...calendars];
 
-  const reservationIndex = result.findIndex(
-    (reservation) => reservation.id === reservationId
+  const calendarIndex = result.findIndex(
+    (calendar) => calendar.id === calendarId
   );
 
-  if (reservationIndex === -1) {
+  if (calendarIndex === -1) {
     return;
   }
-  const categoryIndex = result[reservationIndex].categories.findIndex(
+  const categoryIndex = result[calendarIndex].categories.findIndex(
     (category) => category.id === categoryId
   );
 
@@ -56,7 +56,7 @@ export const createField = (reservations, reservationId, categoryId) => {
     return;
   }
 
-  const category = result[reservationIndex].categories[categoryIndex];
+  const category = result[calendarIndex].categories[categoryIndex];
 
   const fieldId = category.fields.length + 1;
   category.fields.push({
@@ -66,28 +66,23 @@ export const createField = (reservations, reservationId, categoryId) => {
   return result;
 };
 
-export const deleteFieldFn = (
-  reservations,
-  reservationId,
-  categoryId,
-  fieldId
-) => {
-  const result = [...reservations];
-  const reservationIndex = result.findIndex(
-    (reservation) => reservation.id === reservationId
+export const deleteFieldFn = (calendars, calendarId, categoryId, fieldId) => {
+  const result = [...calendars];
+  const calendarIndex = result.findIndex(
+    (calendar) => calendar.id === calendarId
   );
-  if (reservationIndex === -1) {
+  if (calendarIndex === -1) {
     return;
   }
 
-  const categoryIndex = result[reservationIndex].categories.findIndex(
+  const categoryIndex = result[calendarIndex].categories.findIndex(
     (category) => category.id === categoryId
   );
   if (categoryIndex === -1) {
     return;
   }
 
-  const category = result[reservationIndex].categories[categoryIndex];
+  const category = result[calendarIndex].categories[categoryIndex];
 
   const fieldIndex = category.fields.findIndex((field) => field.id === fieldId);
   if (fieldIndex === -1) {
@@ -96,7 +91,7 @@ export const deleteFieldFn = (
   category.fields.splice(fieldIndex, 1);
 
   if (category.fields.length === 0) {
-    result[reservationIndex].categories.splice(categoryIndex, 1);
+    result[calendarIndex].categories.splice(categoryIndex, 1);
   }
 
   return result;

@@ -1,46 +1,46 @@
 import { createField } from "./fields.helpers";
 
-export const createCategoryFn = (reservations, reservationId, title) => {
-  let state = [...reservations];
+export const createCategoryFn = (calendars, calendarId, title) => {
+  let state = [...calendars];
 
-  const reservationIndex = state.findIndex(
-    (reservation) => reservation.id === reservationId
+  const calendarIndex = state.findIndex(
+    (calendar) => calendar.id === calendarId
   );
-  if (reservationIndex === -1) {
+  if (calendarIndex === -1) {
     return state;
   }
 
-  const categoryId = state[reservationIndex].categories.length + 1;
+  const categoryId = state[calendarIndex].categories.length + 1;
 
-  state[reservationIndex].categories.push({
+  state[calendarIndex].categories.push({
     id: categoryId,
     title: title,
     fields: [],
   });
 
-  state = createField(state, reservationId, categoryId);
+  state = createField(state, calendarId, categoryId);
 
   return state;
 };
 
-export const deleteCategoryFn = (reservations, reservationId, categoryId) => {
-  const result = [...reservations];
+export const deleteCategoryFn = (calendars, calendarId, categoryId) => {
+  const result = [...calendars];
 
-  const reservationIndex = result.findIndex(
-    (reservation) => reservation.id === reservationId
+  const calendarIndex = result.findIndex(
+    (calendar) => calendar.id === calendarId
   );
-  if (reservationIndex === -1) {
+  if (calendarIndex === -1) {
     return;
   }
 
-  const categoryIndex = result[reservationIndex].categories.findIndex(
+  const categoryIndex = result[calendarIndex].categories.findIndex(
     (category) => category.id === categoryId
   );
   if (categoryIndex === -1) {
     return;
   }
 
-  result[reservationIndex].categories.splice(categoryIndex, 1);
+  result[calendarIndex].categories.splice(categoryIndex, 1);
 
   return result;
 };
